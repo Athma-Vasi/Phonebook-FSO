@@ -4,6 +4,7 @@
   "description": "baby's first full stack app",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec node index.js"
   },

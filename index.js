@@ -1,14 +1,12 @@
 require("dotenv").config();
 const uuid = require("uuid");
 const express = require("express");
-const morgan = require("morgan");
 const cors = require("cors");
+const morgan = require("morgan");
 
 const app = express();
-app.use(express.static("build"));
-app.use(express.json());
 app.use(cors());
-
+app.use(express.json());
 // create a custom token to log the request body
 morgan.token("req-body", (req) => JSON.stringify(req.body));
 app.use(
@@ -16,26 +14,7 @@ app.use(
     ":method :url :status :res[content-length] - :response-time ms :req-body"
   )
 );
-
-const unknownEndpoint = (req, res) => {
-  res.status(404).send({ error: "unknown endpoint" });
-};
-app.use(unknownEndpoint);
-
-const errorHandler = (error, req, res, next) => {
-  console.log(error.message);
-
-  if (error.name === "CastError") {
-    res.statusMessage = `Malformatted id: ${error.value}`;
-  } else if (error.name === "ValidationError") {
-    res.statusMessage = error.message;
-  }
-
-  res.status(400).end();
-
-  next(error);
-};
-app.use(errorHandler);
+app.use(express.static("build"));
 
 // mongoose
 
@@ -165,6 +144,26 @@ app.post("/api/persons", (req, res) => {
   //   res.json(person);
   // }
 });
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: "unknown endpoint" });
+};
+app.use(unknownEndpoint);
+
+const errorHandler = (error, req, res, next) => {
+  console.log(error.message);
+
+  if (error.name === "CastError") {
+    res.statusMessage = `Malformatted id: ${error.value}`;
+  } else if (error.name === "ValidationError") {
+    res.statusMessage = error.message;
+  }
+
+  res.status(400).end();
+
+  next(error);
+};
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

@@ -23,6 +23,7 @@ const personSchema = new mongoose.Schema({
 
 personSchema.set("toJSON", {
   transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
     // rome-ignore lint/performance/noDelete: <explanation>
     delete returnedObject._id;
     // rome-ignore lint/performance/noDelete: <explanation>
